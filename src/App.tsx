@@ -1,51 +1,51 @@
-import React, { FC, useEffect, useReducer } from 'react';
+import React from 'react';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
+
+import Home from 'pages/Home/Home';
+import Users from 'pages/Users/Users';
+import Admin from 'pages/Admin/Admin';
+
 import './App.scss';
 
-
-const server = process.env.REACT_APP_SERVER_URL;
-
-const App = () => {
-  return (
-    <div className="App">
-      <main>
-        <Announcements />
-      </main>
-    </div>
-  );
-}
-
-type AnnouncementState = {
-  data: any[];
-  isLoading: boolean;
-};
-
-const Announcements: FC = () => {
-  const [{ data, isLoading }, dispatch] = useReducer((prevState: AnnouncementState, newState: Partial<AnnouncementState>) => ({ ...prevState, ...newState }), {
-    data: [],
-    isLoading: true
-  });
-
-  useEffect(() => {
-    const url = `${server}/announcements`;
-    fetch(url)
-      .then(result => result.json())
-      .then(data => {
-        console.log('data', data);
-        dispatch({ data, isLoading: false })
-      })
-      .catch(err => console.log(err));
-  }, []);
-
-  return (
-    <div className="announcements">
-      {isLoading
-        ? <span>Load</span>
-        : <div className="announcement-list">{data.map((d) => (
-          <div key={d._id}><h3>{d.title}</h3><p>{d.description}</p></div>
-        ))}</div>
-      }
-    </div>
-  );
-}
+const App = () => (
+  <div className="App">
+    <main>
+      <Router>
+        <div >
+          <nav className="main-menu">
+            <ul>
+              <li className="main-menu-item">
+                <Link to="/">Home</Link>
+              </li>
+              <li className="main-menu-item">
+                <Link to="/users">Users</Link>
+              </li>
+              <li className="main-menu-item">
+                <Link to="/admin">Admin</Link>
+              </li>
+            </ul>
+          </nav>
+          <Switch>
+            <Route path="/admin">
+              <Admin />
+            </Route>
+            <Route path="/users">
+              <Users />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    </main>
+  </div>
+);
 
 export default App;

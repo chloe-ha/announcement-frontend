@@ -73,6 +73,7 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
     (prevState: Partial<Announcement>, newState: Partial<Announcement>) => ({ ...prevState, ...newState }),
     announcement || { title: '', description: '', datetime: new Date() }
   );
+  const { title, description, datetime } = editedAnnouncement;
 
   const submit = () => {
     const submitMethod = actionMap[action].submitMethod;
@@ -102,7 +103,7 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
             <TextField
               required
               label="Title"
-              value={editedAnnouncement?.title}
+              value={title}
               placeholder="Announcement title"
               onChange={(event) => {
                 dispatch({ title: event.target.value });
@@ -112,7 +113,7 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
             <TextField
               required
               label="Description"
-              value={editedAnnouncement?.description}
+              value={description}
               placeholder="Announcement description"
               multiline
               rows={4}
@@ -126,7 +127,7 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
                 renderInput={(datePickerInputProps) => <TextField required {...datePickerInputProps} />}
                 label="When"
                 inputFormat="dd/MM/yyyy HH:mm"
-                value={editedAnnouncement.datetime || new Date()}
+                value={datetime || new Date()}
                 onChange={(newValue) => {
                   if (newValue) {
                     dispatch({ datetime: newValue });
@@ -135,7 +136,10 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
                 {...(actionMap[action].fieldProps || {})}
               />
             </LocalizationProvider>
-            <Button onClick={submit}>{actionMap[action].modalButtonText}</Button>
+            <Button
+              disabled={!title || !description || !datetime}
+              onClick={submit}
+            >{actionMap[action].modalButtonText}</Button>
           </Stack>
         </Box>
       </Modal>

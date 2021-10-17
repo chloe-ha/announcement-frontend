@@ -3,7 +3,7 @@
 .announcements {
   .announcements-skeleton {
     width: 80%;
-    margin: auto auto 10px;
+    margin: 10px auto auto;
     > * {
       height: 130px;
     }
@@ -12,7 +12,7 @@
     width: 80%;
     display: flex;
     flex-direction: column;
-    margin: auto auto 10px;
+    margin: 10px auto auto;
     padding: 10px;
     box-sizing: border-box;
     background-color: $azaela;
@@ -26,6 +26,6 @@
   }
   .create-action {
     width: 80%;
-    margin: auto;
+    margin: 10px auto auto;
   }
 }

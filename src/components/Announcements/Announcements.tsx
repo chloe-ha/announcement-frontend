@@ -26,7 +26,9 @@ const Announcements: FC<AnnouncementsProps> = ({ view = 'classic' }) => {
   );
 
   const fetchData = () => {
-    return fetchAnnouncements().then(fetchedData => dispatch({ data: fetchedData, isLoading: false }));
+    dispatch({ isLoading: true });
+    return fetchAnnouncements()
+      .then(fetchedData => dispatch({ data: fetchedData, isLoading: false }));
   }
 
   useEffect(() => {

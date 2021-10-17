@@ -12,5 +12,8 @@
     flex: 1 1 auto;
     padding: 15px 10px;
     text-align: center;
+    .logout-button {
+      cursor: pointer;
+    }
   }
 }

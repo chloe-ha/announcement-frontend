@@ -13,13 +13,14 @@ const Button: FC<ButtonProps> = (props) => {
     type,
     look = 'solid',
     children,
+    disabled,
     ...rest
   } = props;
 
   return (
     <button
       type="button"
-      className={classnames(className, 'custom-button', look)}
+      className={classnames(className, 'custom-button', look, disabled ? 'disabled': '')}
       {...rest}
     >
       {props.children}

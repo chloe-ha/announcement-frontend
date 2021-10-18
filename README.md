@@ -7,7 +7,6 @@ Run `npm start`. Open [http://localhost:3000](http://localhost:3000)
 ## TODOs
 
 Add linter
-Menu: check user role permission to access /users and /admin\
 Login: notify user when server returns error\
 Invite users: notify user when invite sent / notify error is error\
 Signup: add confirm password, add password min requirements\

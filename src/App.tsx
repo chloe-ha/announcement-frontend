@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { Redirect } from 'react-router';
-
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,14 +19,15 @@ import './App.scss';
 
 const App: FC = () => {
   const { isAuth, user, logout } = useAuth();
+  const userHasRestrictedAccess = user.role.write;
 
   return (
     <div className="app">
       <nav className="main-menu">
         <ul>
           {isAuth && <li className="main-menu-item"><Link to="/">Home</Link></li>}
-          {isAuth && <li className="main-menu-item"><Link to="/users">Users</Link></li>}
-          {isAuth && <li className="main-menu-item"><Link to="/admin">Admin</Link></li>}
+          {isAuth && userHasRestrictedAccess && <li className="main-menu-item"><Link to="/users">Users</Link></li>}
+          {isAuth && userHasRestrictedAccess && <li className="main-menu-item"><Link to="/admin">Admin</Link></li>}
           <li className="main-menu-item">
             {isAuth
               ? <div className="logout-button" onClick={logout}>Logout</div>
@@ -40,8 +40,8 @@ const App: FC = () => {
         </ul>
       </nav>
       <Switch>
-        <PrivateRoute path="/admin"><Admin /></PrivateRoute>
-        <PrivateRoute path="/users"><Users /></PrivateRoute>
+        <PrivateRoute path="/admin" restrictedAccess={true}><Admin /></PrivateRoute>
+        <PrivateRoute path="/users" restrictedAccess={true}><Users /></PrivateRoute>
         <Route path="/login"><Login /></Route>
         <Route path="/signup/:token" component={Signup}></Route>
         <PrivateRoute path="/"><Home /></PrivateRoute>
@@ -66,11 +66,15 @@ export default AppWithContext;
 
 type PrivateRouteType = {
   path: string;
+  restrictedAccess?: boolean;
 }
-const PrivateRoute: FC<PrivateRouteType> = ({ children, path }) => {
-  const { isAuth } = useAuth();
+const PrivateRoute: FC<PrivateRouteType> = ({ children, path, restrictedAccess = false }) => {
+  const { isAuth, user } = useAuth();
+  const userHasRestrictedAccess = user.role.write;
   const routeElement = isAuth === true
-    ? children
+    ? !restrictedAccess || (restrictedAccess && userHasRestrictedAccess)
+      ? children
+      : <Redirect to="/" />
     : <Redirect to="/login" />;
 
   return <Route path={path} render={() => routeElement} />;

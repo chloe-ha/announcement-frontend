@@ -10,7 +10,6 @@ type ButtonProps = React.ComponentPropsWithoutRef<'button'> & {
 const Button: FC<ButtonProps> = (props) => {
   const {
     className,
-    type,
     look = 'solid',
     children,
     disabled,
@@ -20,10 +19,10 @@ const Button: FC<ButtonProps> = (props) => {
   return (
     <button
       type="button"
-      className={classnames(className, 'custom-button', look, disabled ? 'disabled': '')}
+      className={classnames(className, 'custom-button', look, disabled ? 'disabled' : '')}
       {...rest}
     >
-      {props.children}
+      {children}
     </button>
   );
 };

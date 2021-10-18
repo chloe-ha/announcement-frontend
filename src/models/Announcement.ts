@@ -1,4 +1,4 @@
-import { sendRequest } from 'helpers/fetch-wrapper';
+import { sendRequest } from '../helpers/fetch-wrapper';
 
 const server = process.env.REACT_APP_SERVER_URL;
 
@@ -7,7 +7,7 @@ export const fetchAnnouncements = () => {
   return sendRequest(url)
     .then((result) => result.json())
     .catch((err) => console.error(err));
-}
+};
 
 export const createAnnouncement = (editedAnnouncement: Partial<Announcement>) => {
   const url = `${server}/announcement`;

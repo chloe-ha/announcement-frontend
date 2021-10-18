@@ -1,19 +1,4 @@
-import _G from 'helpers/global';
-
-export const sendRequest = (
-  url: string,
-  method: 'POST' | 'GET' | 'DELETE' = 'GET',
-  body: any = undefined
-): Promise<any> => {
-  return fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    credentials: 'include',
-    body: body ? JSON.stringify(body): undefined
-  }).then(handleResponse);
-};
+import _G from './global';
 
 const handleResponse = async (res: Response) => {
   if (res.status === 401) {
@@ -24,4 +9,17 @@ const handleResponse = async (res: Response) => {
     return Promise.reject(res);
   }
   return Promise.resolve(res);
-}
+};
+
+export const sendRequest = (
+  url: string,
+  method: 'POST' | 'GET' | 'DELETE' = 'GET',
+  body: any = undefined,
+): Promise<any> => fetch(url, {
+  method,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  credentials: 'include',
+  body: body ? JSON.stringify(body) : undefined,
+}).then(handleResponse);

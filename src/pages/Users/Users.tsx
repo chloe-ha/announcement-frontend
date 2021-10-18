@@ -3,8 +3,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { TextField } from '@mui/material';
-import { fetchUsers, inviteUser } from 'models/User';
-import Button from 'components/Button/Button';
+import { fetchUsers, inviteUser } from '../../models/User';
+import Button from '../../components/Button/Button';
 
 type UserState = {
   staff: User[];
@@ -18,11 +18,13 @@ const boxStyle = {
   width: 400,
   border: '1px solid #ccc',
   p: 3,
-  m: '10px auto auto'
+  m: '10px auto auto',
 };
 
 const Users = () => {
-  const [{ staff, managers, newStaffEmail, newManagerEmail, isLoading }, dispatch] = useReducer(
+  const [{
+    staff, managers, newStaffEmail, newManagerEmail, isLoading,
+  }, dispatch] = useReducer(
     (prevState: UserState, newState: Partial<UserState>) => ({ ...prevState, ...newState }),
     {
       managers: [],
@@ -43,9 +45,9 @@ const Users = () => {
     dispatch({ isLoading: true });
     fetchUsers()
       .then((fetchedUsers) => {
-        const staffUsers = fetchedUsers.filter(s => s.role.roleName === 'Staff');
-        const managerUsers = fetchedUsers.filter(m => m.role.roleName === 'Manager');
-        dispatch({ staff: staffUsers, managers: managerUsers, isLoading: false })
+        const staffUsers = fetchedUsers.filter((s) => s.role.roleName === 'Staff');
+        const managerUsers = fetchedUsers.filter((m) => m.role.roleName === 'Manager');
+        dispatch({ staff: staffUsers, managers: managerUsers, isLoading: false });
       });
   }, []);
 
@@ -53,15 +55,18 @@ const Users = () => {
     <div className="user-list">
       {isLoading
         ? (
-        <Box
-          className="signup-box"
-          sx={{
-            width: 500,
-            p: 4,
-            m: '10px auto auto',
-            textAlign: 'center'
-          }}
-        >Loading ...</Box>
+          <Box
+            className="signup-box"
+            sx={{
+              width: 500,
+              p: 4,
+              m: '10px auto auto',
+              textAlign: 'center',
+            }}
+          >
+            Loading ...
+
+          </Box>
         )
         : (
           <>
@@ -71,11 +76,10 @@ const Users = () => {
                 {managers.length
                   ? (
                     <ul>
-                      {managers.map(m => <li key={m.email}>{`${m.username} (${m.email})`}</li>)}
+                      {managers.map((m) => <li key={m.email}>{`${m.username} (${m.email})`}</li>)}
                     </ul>
                   )
-                  : <div>No managers yet</div>
-                }
+                  : <div>No managers yet</div>}
                 <Stack direction="row" spacing={2}>
                   <TextField
                     required
@@ -86,7 +90,12 @@ const Users = () => {
                       dispatch({ newManagerEmail: event.target.value });
                     }}
                   />
-                  <Button disabled={!newManagerEmail} onClick={() => handleInviteUser(newManagerEmail, 'Manager')}>Invite</Button>
+                  <Button
+                    disabled={!newManagerEmail}
+                    onClick={() => handleInviteUser(newManagerEmail, 'Manager')}
+                  >
+                    Invite
+                  </Button>
                 </Stack>
               </Stack>
             </Box>
@@ -96,11 +105,10 @@ const Users = () => {
                 {staff.length
                   ? (
                     <ul>
-                      {staff.map(m => <li key={m.email}>{`${m.username} (${m.email})`}</li>)}
+                      {staff.map((m) => <li key={m.email}>{`${m.username} (${m.email})`}</li>)}
                     </ul>
                   )
-                  : <div>No staff yet</div>
-                }
+                  : <div>No staff yet</div>}
                 <Stack direction="row" spacing={2}>
                   <TextField
                     required
@@ -111,7 +119,12 @@ const Users = () => {
                       dispatch({ newStaffEmail: event.target.value });
                     }}
                   />
-                  <Button disabled={!newStaffEmail} onClick={() => handleInviteUser(newStaffEmail, 'Staff')}>Invite</Button>
+                  <Button
+                    disabled={!newStaffEmail}
+                    onClick={() => handleInviteUser(newStaffEmail, 'Staff')}
+                  >
+                    Invite
+                  </Button>
                 </Stack>
               </Stack>
             </Box>

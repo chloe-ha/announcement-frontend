@@ -11,9 +11,9 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { createAnnouncement, editAnnouncement, deleteAnnouncement } from 'models/Announcement';
+import { createAnnouncement, editAnnouncement, deleteAnnouncement } from '../../models/Announcement';
 
-import Button from 'components/Button/Button';
+import Button from '../Button/Button';
 
 import './AnnouncementEdit.scss';
 
@@ -29,37 +29,37 @@ const style = {
 };
 
 const actionMap = {
-  'create': {
+  create: {
     buttonText: 'Create new announcement',
     modalTitle: 'Create new announcement',
     modalButtonText: 'Create',
     fieldProps: {},
     buttonProps: {},
-    submitMethod: createAnnouncement
+    submitMethod: createAnnouncement,
   },
-  'edit': {
+  edit: {
     buttonText: 'Edit',
     modalTitle: 'Edit announcement',
     modalButtonText: 'Update',
     fieldProps: {},
     buttonProps: {
       className: 'edit-button',
-      look: 'transparent'
+      look: 'transparent',
     },
-    submitMethod: editAnnouncement
+    submitMethod: editAnnouncement,
   },
-  'delete': {
+  delete: {
     buttonText: 'Delete',
     modalTitle: 'Delete announcement',
     modalButtonText: 'Delete',
     fieldProps: {
-      disabled: true
+      disabled: true,
     },
     buttonProps: {
-      look: 'transparent'
+      look: 'transparent',
     },
-    submitMethod: deleteAnnouncement
-  }
+    submitMethod: deleteAnnouncement,
+  },
 };
 
 const roles = ['Manager', 'Staff'];
@@ -76,12 +76,16 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [editedAnnouncement, dispatch] = useReducer(
     (prevState: Partial<Announcement>, newState: Partial<Announcement>) => ({ ...prevState, ...newState }),
-    announcement || { title: '', description: '', roleName: 'Staff', datetime: new Date() }
+    announcement || {
+      title: '', description: '', roleName: 'Staff', datetime: new Date(),
+    },
   );
-  const { title, description, roleName, datetime } = editedAnnouncement;
+  const {
+    title, description, roleName, datetime,
+  } = editedAnnouncement;
 
   const submit = () => {
-    const submitMethod = actionMap[action].submitMethod;
+    const { submitMethod } = actionMap[action];
     submitMethod(editedAnnouncement).then(() => {
       refetch().then(() => {
         setOpen(false);
@@ -123,7 +127,7 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
               multiline
               rows={4}
               onChange={(event) => {
-                dispatch({ description: event.target.value })
+                dispatch({ description: event.target.value });
               }}
               {...(actionMap[action].fieldProps || {})}
             />
@@ -138,12 +142,11 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
               }}
               required
             >
-              {roles.map(role => <MenuItem key={role} value={role}>{role}</MenuItem>)}
+              {roles.map((role) => <MenuItem key={role} value={role}>{role}</MenuItem>)}
             </Select>
             {roleName === 'Staff'
               ? <span>This announcement is visible for all managers and all staff</span>
-              : <span>This announcement is only visible by managers</span>
-            }
+              : <span>This announcement is only visible by managers</span>}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 renderInput={(datePickerInputProps) => <TextField required {...datePickerInputProps} />}
@@ -161,11 +164,14 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
             <Button
               disabled={!title || !description || !datetime}
               onClick={submit}
-            >{actionMap[action].modalButtonText}</Button>
+            >
+              {actionMap[action].modalButtonText}
+
+            </Button>
           </Stack>
         </Box>
       </Modal>
     </div>
   );
-}
+};
 export default AnnouncementEdit;

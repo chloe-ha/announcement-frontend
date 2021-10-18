@@ -1,11 +1,13 @@
-import { FC, useEffect, useReducer, useState } from 'react';
+import React, {
+  FC, useEffect, useReducer, useState,
+} from 'react';
+import { useHistory } from 'react-router';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
-import Button from 'components/Button/Button';
-import { fetchTokenEmail, postUser } from 'models/User';
-import { useHistory } from 'react-router';
+import Button from '../../components/Button/Button';
+import { fetchTokenEmail, postUser } from '../../models/User';
 
 type SignupProps = {
   match: {
@@ -19,25 +21,28 @@ type SignupType = {
   password: string;
 }
 const Signup: FC<SignupProps> = (props) => {
-  const token = props.match.params.token;
+  const { match: { params: { token } } } = props;
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [isValidToken, setIsValidToken] = useState(false);
   const [email, setEmail] = useState('');
-  const [{ username, password }, dispatch] = useReducer((prevState: SignupType, newState: Partial<SignupType>) => ({ ...prevState, ...newState }),
-    { username: '', password: '' });
+  const [state, dispatch] = useReducer(
+    (prevState: SignupType, newState: Partial<SignupType>) => ({ ...prevState, ...newState }),
+    { username: '', password: '' },
+  );
+  const { username, password } = state;
 
   const handlePostUser = () => {
     setIsLoading(true);
     postUser({ email, username, password }, token)
       .then(() => history.push('/login'))
-      .catch(err => console.error(err))
-  }
+      .catch((err) => console.error(err));
+  };
 
   useEffect(() => {
     fetchTokenEmail(token)
-      .then(res => res.json())
-      .then(result => {
+      .then((res) => res.json())
+      .then((result) => {
         setIsLoading(false);
         if (result.email) {
           setIsValidToken(true);
@@ -46,8 +51,7 @@ const Signup: FC<SignupProps> = (props) => {
         } else {
           setIsValidToken(false);
         }
-      })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+      });
   }, []);
 
   if (isLoading) {
@@ -58,9 +62,12 @@ const Signup: FC<SignupProps> = (props) => {
           width: 500,
           p: 4,
           m: '10px auto auto',
-          textAlign: 'center'
+          textAlign: 'center',
         }}
-      >Retrieving information ...</Box>
+      >
+        Retrieving information ...
+
+      </Box>
     );
   }
   if (!isValidToken) {
@@ -71,9 +78,12 @@ const Signup: FC<SignupProps> = (props) => {
           width: 500,
           p: 4,
           m: '10px auto auto',
-          textAlign: 'center'
+          textAlign: 'center',
         }}
-      >Invalid token</Box>
+      >
+        Invalid token
+
+      </Box>
     );
   }
   return (
@@ -82,7 +92,7 @@ const Signup: FC<SignupProps> = (props) => {
       sx={{
         width: 500,
         p: 4,
-        m: 'auto'
+        m: 'auto',
       }}
     >
       <Stack spacing={2}>
@@ -107,16 +117,19 @@ const Signup: FC<SignupProps> = (props) => {
           value={password}
           type="password"
           onChange={(event) => {
-            dispatch({ password: event.target.value })
+            dispatch({ password: event.target.value });
           }}
         />
         <Button
           disabled={!username || !password}
           onClick={handlePostUser}
-        >Signup</Button>
+        >
+          Signup
+
+        </Button>
       </Stack>
     </Box>
   );
-}
+};
 
 export default Signup;

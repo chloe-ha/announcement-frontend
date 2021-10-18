@@ -4,16 +4,15 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
 } from 'react-router-dom';
 
-import { useAuth, AuthProvider } from 'contexts/authContext';
-
-import Login from 'pages/Login/Login';
-import Home from 'pages/Home/Home';
-import Users from 'pages/Users/Users';
-import Admin from 'pages/Admin/Admin';
-import Signup from 'pages/Signup/Signup';
+import Login from './pages/Login/Login';
+import Home from './pages/Home/Home';
+import Users from './pages/Users/Users';
+import Admin from './pages/Admin/Admin';
+import Signup from './pages/Signup/Signup';
+import { useAuth, AuthProvider } from './contexts/authContext';
 
 import './App.scss';
 
@@ -26,24 +25,24 @@ const App: FC = () => {
       <nav className="main-menu">
         <ul>
           {isAuth && <li className="main-menu-item"><Link to="/">Home</Link></li>}
-          {isAuth && userHasRestrictedAccess && <li className="main-menu-item"><Link to="/users">Users</Link></li>}
-          {isAuth && userHasRestrictedAccess && <li className="main-menu-item"><Link to="/admin">Admin</Link></li>}
+          {isAuth && userHasRestrictedAccess
+            && <li className="main-menu-item"><Link to="/users">Users</Link></li>}
+          {isAuth && userHasRestrictedAccess
+            && <li className="main-menu-item"><Link to="/admin">Admin</Link></li>}
           <li className="main-menu-item">
             {isAuth
-              ? <div className="logout-button" onClick={logout}>Logout</div>
-              : <Link to="/login">Login</Link>
-            }
+              ? <button className="logout-button" type="button" onClick={logout}>Logout</button>
+              : <Link to="/login">Login</Link>}
           </li>
-          {isAuth && user.role.roleName !== 'unknown' &&
-            <div className="profile">{`Welcome ${user.username} (${user.role.roleName})`}</div>
-          }
+          {isAuth && user.role.roleName !== 'unknown'
+            && <div className="profile">{`Welcome ${user.username} (${user.role.roleName})`}</div>}
         </ul>
       </nav>
       <Switch>
-        <PrivateRoute path="/admin" restrictedAccess={true}><Admin /></PrivateRoute>
-        <PrivateRoute path="/users" restrictedAccess={true}><Users /></PrivateRoute>
+        <PrivateRoute path="/admin" restrictedAccess><Admin /></PrivateRoute>
+        <PrivateRoute path="/users" restrictedAccess><Users /></PrivateRoute>
         <Route path="/login"><Login /></Route>
-        <Route path="/signup/:token" component={Signup}></Route>
+        <Route path="/signup/:token" component={Signup} />
         <PrivateRoute path="/"><Home /></PrivateRoute>
       </Switch>
     </div>
@@ -78,4 +77,4 @@ const PrivateRoute: FC<PrivateRouteType> = ({ children, path, restrictedAccess =
     : <Redirect to="/login" />;
 
   return <Route path={path} render={() => routeElement} />;
-}
+};

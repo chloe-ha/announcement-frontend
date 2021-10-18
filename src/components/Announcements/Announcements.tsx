@@ -2,13 +2,13 @@ import React, { FC, useReducer, useEffect } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 
-import { fetchAnnouncements } from 'models/Announcement';
+import { fetchAnnouncements } from '../../models/Announcement';
 
-import AnnouncementEdit from 'components/AnnouncementEdit/AnnouncementEdit';
+import AnnouncementEdit from '../AnnouncementEdit/AnnouncementEdit';
 
 import './Announcements.scss';
 
-type AnnouncementState = {
+type StateType = {
   data: Announcement[];
   isLoading: boolean;
 };
@@ -18,7 +18,7 @@ type AnnouncementsProps = {
 
 const Announcements: FC<AnnouncementsProps> = ({ view = 'classic' }) => {
   const [{ data, isLoading }, dispatch] = useReducer(
-    (prevState: AnnouncementState, newState: Partial<AnnouncementState>) => ({ ...prevState, ...newState }),
+    (prevState: StateType, newState: Partial<StateType>) => ({ ...prevState, ...newState }),
     {
       data: [],
       isLoading: true,
@@ -28,8 +28,8 @@ const Announcements: FC<AnnouncementsProps> = ({ view = 'classic' }) => {
   const fetchData = () => {
     dispatch({ isLoading: true });
     return fetchAnnouncements()
-      .then(fetchedData => dispatch({ data: fetchedData, isLoading: false }));
-  }
+      .then((fetchedData) => dispatch({ data: fetchedData, isLoading: false }));
+  };
 
   useEffect(() => {
     fetchData();
@@ -51,19 +51,23 @@ const Announcements: FC<AnnouncementsProps> = ({ view = 'classic' }) => {
               <div key={d._id} className="announcement-item">
                 <h3>{d.title}</h3>
                 <p>{d.description}</p>
-                {view === 'admin' ?
-                  <div className="actions">
-                    <AnnouncementEdit action="edit" announcement={d} refetch={fetchData} />
-                    <AnnouncementEdit action="delete" announcement={d} refetch={fetchData} />
-                  </div>
-                : null}
+                {view === 'admin'
+                  ? (
+                    <div className="actions">
+                      <AnnouncementEdit action="edit" announcement={d} refetch={fetchData} />
+                      <AnnouncementEdit action="delete" announcement={d} refetch={fetchData} />
+                    </div>
+                  )
+                  : null}
               </div>
             ))}
-            {view === 'admin' ?
-              <div className="create-action">
-                <AnnouncementEdit action="create" refetch={fetchData} />
-              </div>
-            : null}
+            {view === 'admin'
+              ? (
+                <div className="create-action">
+                  <AnnouncementEdit action="create" refetch={fetchData} />
+                </div>
+              )
+              : null}
           </div>
         )}
     </div>

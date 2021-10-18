@@ -14,11 +14,12 @@ import Login from 'pages/Login/Login';
 import Home from 'pages/Home/Home';
 import Users from 'pages/Users/Users';
 import Admin from 'pages/Admin/Admin';
+import Signup from 'pages/Signup/Signup';
 
 import './App.scss';
 
 const App: FC = () => {
-  const { isAuth, logout } = useAuth();
+  const { isAuth, user, logout } = useAuth();
 
   return (
     <div className="app">
@@ -33,12 +34,16 @@ const App: FC = () => {
               : <Link to="/login">Login</Link>
             }
           </li>
+          {isAuth && user.role.roleName !== 'unknown' &&
+            <div className="profile">{`Welcome ${user.username} (${user.role.roleName})`}</div>
+          }
         </ul>
       </nav>
       <Switch>
         <PrivateRoute path="/admin"><Admin /></PrivateRoute>
         <PrivateRoute path="/users"><Users /></PrivateRoute>
         <Route path="/login"><Login /></Route>
+        <Route path="/signup/:token" component={Signup}></Route>
         <PrivateRoute path="/"><Home /></PrivateRoute>
       </Switch>
     </div>

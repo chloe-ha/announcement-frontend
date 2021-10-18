@@ -1,13 +1,15 @@
 import React, { FC, useState, useReducer } from 'react';
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import Box from '@mui/material/Box';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
 import Modal from '@mui/material/Modal';
+import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { createAnnouncement, editAnnouncement, deleteAnnouncement } from 'models/Announcement';
 
@@ -59,11 +61,14 @@ const actionMap = {
     submitMethod: deleteAnnouncement
   }
 };
+
+const roles = ['Manager', 'Staff'];
+
 type AnnouncementEditProps = {
   action: 'create' | 'edit' | 'delete';
   refetch: () => Promise<any>;
   announcement?: Announcement;
-}
+};
 
 const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
   const { action, refetch, announcement } = props;
@@ -71,9 +76,9 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [editedAnnouncement, dispatch] = useReducer(
     (prevState: Partial<Announcement>, newState: Partial<Announcement>) => ({ ...prevState, ...newState }),
-    announcement || { title: '', description: '', datetime: new Date() }
+    announcement || { title: '', description: '', roleName: 'Staff', datetime: new Date() }
   );
-  const { title, description, datetime } = editedAnnouncement;
+  const { title, description, roleName, datetime } = editedAnnouncement;
 
   const submit = () => {
     const submitMethod = actionMap[action].submitMethod;
@@ -122,6 +127,23 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
               }}
               {...(actionMap[action].fieldProps || {})}
             />
+            <Select
+              label="Role"
+              value={roleName}
+              onChange={(event) => {
+                const newRole = event.target.value;
+                if (newRole === 'Manager' || newRole === 'Staff') {
+                  dispatch({ roleName: newRole });
+                }
+              }}
+              required
+            >
+              {roles.map(role => <MenuItem key={role} value={role}>{role}</MenuItem>)}
+            </Select>
+            {roleName === 'Staff'
+              ? <span>This announcement is visible for all managers and all staff</span>
+              : <span>This announcement is only visible by managers</span>
+            }
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 renderInput={(datePickerInputProps) => <TextField required {...datePickerInputProps} />}

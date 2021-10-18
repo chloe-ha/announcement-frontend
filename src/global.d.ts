@@ -3,6 +3,7 @@ declare global {
     _id: string;
     title: string;
     description: string;
+    roleName: 'Manager' | 'Staff';
     datetime: Date;
   }
   interface User {

@@ -11,8 +11,18 @@ export type LoginCreds = {
   password: string;
 };
 
+const unknownUser: User = {
+  username: '',
+  email: '',
+  role: {
+    roleName: 'unknown',
+    write: false
+  }
+};
+
 const AuthContext = createContext({
   isAuth: false,
+  user: unknownUser,
   checkIsAuth: () => Promise.resolve(),
   login: (creds: LoginCreds) => Promise.resolve(),
   logout: () => Promise.resolve()
@@ -20,6 +30,7 @@ const AuthContext = createContext({
 
 export const AuthProvider: FC = ({ children }) => {
   const [isAuth, setIsAuth] = React.useState(false);
+  const [user, setUser] = React.useState(unknownUser);
   const history = useHistory();
   const location = useLocation();
 
@@ -27,21 +38,23 @@ export const AuthProvider: FC = ({ children }) => {
     const url = `${server}/isAuth`;
     return sendRequest(url)
       .then((res) => res.json())
-      .then((res) => { if (res.isAuth) enter(); })
+      .then((res) => { if (res.isAuth) enter(res.user); })
       .catch((err) => console.error(err));
   }
 
-  const enter = () => {
+  const enter = (user: User) => {
     setIsAuth(true);
-    if (location.pathname !== '/home')
-      history.push('/home');
+    setUser(user);
+    if (location.pathname !== '/')
+      history.push('/');
   };
 
   const login = (cred: LoginCreds) => {
     const url = `${server}/login`;
     return sendRequest(url, 'POST', cred)
-      .then(() => {
-        enter();
+      .then(res => res.json())
+      .then(res => {
+        enter(res.user);
       })
       .catch((err) => console.error(err));
   };
@@ -65,7 +78,7 @@ export const AuthProvider: FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuth, checkIsAuth, login, logout }}>
+    <AuthContext.Provider value={{ isAuth, user, checkIsAuth, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

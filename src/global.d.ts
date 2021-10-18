@@ -5,5 +5,13 @@ declare global {
     description: string;
     datetime: Date;
   }
+  interface User {
+    username: string;
+    email: string;
+    role: {
+      roleName: 'unknown' | 'Manager' | 'Staff',
+      write: boolean;
+    }
+  }
 };
 export {};

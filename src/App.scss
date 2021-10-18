@@ -16,4 +16,11 @@
       cursor: pointer;
     }
   }
+  .profile {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: $ocean;
+    color: white;
+  }
 }

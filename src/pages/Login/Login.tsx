@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -15,17 +15,13 @@ const Login = () => {
     },
   );
 
-  const { login, checkIsAuth } = useAuth();
-
-  useEffect(() => {
-    checkIsAuth();
-  }, []);
+  const { login } = useAuth();
 
   return (
     <Box
       className="login-box"
       sx={{
-        width: 500,
+        maxWidth: 500,
         p: 4,
         m: 'auto',
       }}

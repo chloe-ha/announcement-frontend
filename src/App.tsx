@@ -7,6 +7,8 @@ import {
   Link,
 } from 'react-router-dom';
 
+import LoadingButton from '@mui/lab/LoadingButton';
+
 import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import Users from './pages/Users/Users';
@@ -18,33 +20,44 @@ import { useAuth, AuthProvider } from './contexts/authContext';
 import './App.scss';
 
 const App: FC = () => {
-  const { isAuth, user } = useAuth();
+  const { hasAppLoaded, isAuth, user } = useAuth();
   const userHasRestrictedAccess = user.role.write;
 
   return (
     <div className="app">
-      <nav className="main-menu">
-        <ul>
-          {isAuth && <li><Link className="main-menu-item" to="/">Home</Link></li>}
-          {isAuth && userHasRestrictedAccess
+      {!hasAppLoaded
+        ? (
+          <div className="loading-app">
+            <LoadingButton loading size="large" />
+          </div>
+        )
+        : (
+          <>
+            <nav className="main-menu">
+              <ul>
+                {isAuth && <li><Link className="main-menu-item" to="/">Home</Link></li>}
+                {isAuth && userHasRestrictedAccess
             && <li><Link className="main-menu-item" to="/users">Users</Link></li>}
-          {isAuth && userHasRestrictedAccess
+                {isAuth && userHasRestrictedAccess
             && <li><Link className="main-menu-item" to="/admin">Admin</Link></li>}
-          {!isAuth && (
-          <li>
-            <Link className="main-menu-item" to="/login">Login</Link>
-          </li>
-          )}
-          {isAuth && <AccountWidget />}
-        </ul>
-      </nav>
-      <Switch>
-        <PrivateRoute path="/admin" restrictedAccess><Admin /></PrivateRoute>
-        <PrivateRoute path="/users" restrictedAccess><Users /></PrivateRoute>
-        <Route path="/login"><Login /></Route>
-        <Route path="/signup/:token" component={Signup} />
-        <PrivateRoute path="/"><Home /></PrivateRoute>
-      </Switch>
+                {!isAuth && (
+                <li>
+                  <Link className="main-menu-item" to="/login">Login</Link>
+                </li>
+                )}
+                {isAuth && <AccountWidget />}
+              </ul>
+            </nav>
+            <Switch>
+              <PrivateRoute path="/" exact><Home /></PrivateRoute>
+              <PrivateRoute path="/admin" restrictedAccess><Admin /></PrivateRoute>
+              <PrivateRoute path="/users" restrictedAccess><Users /></PrivateRoute>
+              {!isAuth && <Route path="/login"><Login /></Route>}
+              <Route path="/signup/:token" component={Signup} />
+              <Redirect to="/" />
+            </Switch>
+          </>
+        )}
     </div>
   );
 };
@@ -66,8 +79,11 @@ export default AppWithContext;
 type PrivateRouteType = {
   path: string;
   restrictedAccess?: boolean;
+  exact?: boolean;
 }
-const PrivateRoute: FC<PrivateRouteType> = ({ children, path, restrictedAccess = false }) => {
+const PrivateRoute: FC<PrivateRouteType> = ({
+  children, path, restrictedAccess = false, exact = false,
+}) => {
   const { isAuth, user } = useAuth();
   const userHasRestrictedAccess = user.role.write;
   const routeElement = isAuth === true
@@ -76,5 +92,5 @@ const PrivateRoute: FC<PrivateRouteType> = ({ children, path, restrictedAccess =
       : <Redirect to="/" />
     : <Redirect to="/login" />;
 
-  return <Route path={path} render={() => routeElement} />;
+  return <Route path={path} render={() => routeElement} exact={exact} />;
 };

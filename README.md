@@ -9,7 +9,6 @@ Run `npm start`. Open [http://localhost:3000](http://localhost:3000)
 Login: notify user when server returns error\
 Invite users: notify user when invite sent / notify error is error\
 Signup: add confirm password, add password min requirements\
-Fix: when logged in, refresh /users page redirects to / \
 Announcements: filter by date
 
 ## Notes

@@ -1,5 +1,5 @@
 import React, {
-  createContext, useContext, FC, useEffect,
+  createContext, useContext, FC, useEffect, useReducer,
 } from 'react';
 import { useHistory } from 'react-router';
 import { useLocation } from 'react-router-dom';
@@ -22,7 +22,14 @@ const unknownUser: User = {
   },
 };
 
+type AuthState = {
+  hasAppLoaded: boolean;
+  isAuth: boolean;
+  user: User;
+};
+
 const AuthContext = createContext({
+  hasAppLoaded: false,
   isAuth: false,
   user: unknownUser,
   checkIsAuth: () => Promise.resolve(),
@@ -31,37 +38,42 @@ const AuthContext = createContext({
 });
 
 export const AuthProvider: FC = ({ children }) => {
-  const [isAuth, setIsAuth] = React.useState(false);
-  const [user, setUser] = React.useState(unknownUser);
   const history = useHistory();
   const location = useLocation();
+
+  const [{ hasAppLoaded, isAuth, user }, dispatch] = useReducer(
+    (prevState: AuthState, newState: Partial<AuthState>) => ({ ...prevState, ...newState }),
+    {
+      hasAppLoaded: false,
+      isAuth: false,
+      user: unknownUser,
+    },
+  );
 
   const checkIsAuth = () => {
     const url = `${server}/isAuth`;
     return sendRequest(url)
       .then((res) => res.json())
       .then((res) => { if (res.isAuth) enter(res.user); })
+      .then(() => dispatch({ hasAppLoaded: true }))
       .catch((err) => console.error(err));
   };
 
   const enter = (fetchedUser: User) => {
-    setIsAuth(true);
-    setUser(fetchedUser);
-    if (location.pathname !== '/') history.push('/');
+    dispatch({ isAuth: true, user: fetchedUser });
   };
 
   const login = (cred: LoginCreds) => {
     const url = `${server}/login`;
     return sendRequest(url, 'POST', cred)
       .then((res) => res.json())
-      .then((res) => {
-        enter(res.user);
-      })
+      .then((res) => enter(res.user))
+      .then(() => history.push('/'))
       .catch((err) => console.error(err));
   };
 
   const exit = () => {
-    setIsAuth(false);
+    dispatch({ isAuth: false, user: unknownUser });
     if (location.pathname !== '/') history.push('/');
   };
 
@@ -73,12 +85,13 @@ export const AuthProvider: FC = ({ children }) => {
   };
 
   useEffect(() => {
+    checkIsAuth();
     _G.exit = exit;
   }, []);
 
   return (
     <AuthContext.Provider value={{
-      isAuth, user, checkIsAuth, login, logout,
+      hasAppLoaded, isAuth, user, checkIsAuth, login, logout,
     }}
     >
       {children}

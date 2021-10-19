@@ -12,30 +12,30 @@ import Home from './pages/Home/Home';
 import Users from './pages/Users/Users';
 import Admin from './pages/Admin/Admin';
 import Signup from './pages/Signup/Signup';
+import AccountWidget from './components/AccountWidget/AccountWidget';
 import { useAuth, AuthProvider } from './contexts/authContext';
 
 import './App.scss';
 
 const App: FC = () => {
-  const { isAuth, user, logout } = useAuth();
+  const { isAuth, user } = useAuth();
   const userHasRestrictedAccess = user.role.write;
 
   return (
     <div className="app">
       <nav className="main-menu">
         <ul>
-          {isAuth && <li className="main-menu-item"><Link to="/">Home</Link></li>}
+          {isAuth && <li><Link className="main-menu-item" to="/">Home</Link></li>}
           {isAuth && userHasRestrictedAccess
-            && <li className="main-menu-item"><Link to="/users">Users</Link></li>}
+            && <li><Link className="main-menu-item" to="/users">Users</Link></li>}
           {isAuth && userHasRestrictedAccess
-            && <li className="main-menu-item"><Link to="/admin">Admin</Link></li>}
-          <li className="main-menu-item">
-            {isAuth
-              ? <button className="logout-button" type="button" onClick={logout}>Logout</button>
-              : <Link to="/login">Login</Link>}
+            && <li><Link className="main-menu-item" to="/admin">Admin</Link></li>}
+          {!isAuth && (
+          <li>
+            <Link className="main-menu-item" to="/login">Login</Link>
           </li>
-          {isAuth && user.role.roleName !== 'unknown'
-            && <div className="profile">{`Welcome ${user.username} (${user.role.roleName})`}</div>}
+          )}
+          {isAuth && <AccountWidget />}
         </ul>
       </nav>
       <Switch>

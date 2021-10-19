@@ -55,8 +55,8 @@ export const AuthProvider: FC = ({ children }) => {
     return sendRequest(url)
       .then((res) => res.json())
       .then((res) => { if (res.isAuth) enter(res.user); })
-      .then(() => dispatch({ hasAppLoaded: true }))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => dispatch({ hasAppLoaded: true }));
   };
 
   const enter = (fetchedUser: User) => {
@@ -74,7 +74,7 @@ export const AuthProvider: FC = ({ children }) => {
 
   const exit = () => {
     dispatch({ isAuth: false, user: unknownUser });
-    if (location.pathname !== '/') history.push('/');
+    if (location.pathname !== '/login') history.push('/login');
   };
 
   const logout = () => {

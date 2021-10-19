@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import { createAnnouncement, editAnnouncement, deleteAnnouncement } from '../../models/Announcement';
 
 import Button from '../Button/Button';
-
 import './AnnouncementEdit.scss';
 
 const style = {
@@ -86,11 +85,8 @@ const AnnouncementEdit: FC<AnnouncementEditProps> = (props) => {
 
   const submit = () => {
     const { submitMethod } = actionMap[action];
-    submitMethod(editedAnnouncement).then(() => {
-      refetch().then(() => {
-        setOpen(false);
-      });
-    });
+    submitMethod(editedAnnouncement)
+      .then(() => refetch());
   };
 
   return (

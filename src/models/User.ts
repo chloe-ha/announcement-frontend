@@ -29,6 +29,5 @@ type NewUser = {
 export const postUser = (user: NewUser, token: string) => {
   const url = `${server}/user/${token}`;
   return sendRequest(url, 'POST', user)
-    .then((res) => res.json())
     .catch((err) => console.error(err));
 };

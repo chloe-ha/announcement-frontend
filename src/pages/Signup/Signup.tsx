@@ -66,7 +66,6 @@ const Signup: FC<SignupProps> = (props) => {
         }}
       >
         Retrieving information ...
-
       </Box>
     );
   }
@@ -82,7 +81,6 @@ const Signup: FC<SignupProps> = (props) => {
         }}
       >
         Invalid token
-
       </Box>
     );
   }

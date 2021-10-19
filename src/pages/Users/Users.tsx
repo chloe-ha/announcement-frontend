@@ -1,8 +1,8 @@
 import React, { useReducer, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { TextField } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { fetchUsers, inviteUser } from '../../models/User';
 import Button from '../../components/Button/Button';
 

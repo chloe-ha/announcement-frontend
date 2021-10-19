@@ -85,7 +85,11 @@ export const AuthProvider: FC = ({ children }) => {
   };
 
   useEffect(() => {
-    checkIsAuth();
+    if (!location.pathname.startsWith('/signup/')) {
+      checkIsAuth();
+    } else {
+      dispatch({ hasAppLoaded: true });
+    }
     _G.exit = exit;
   }, []);
 

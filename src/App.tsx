@@ -49,11 +49,11 @@ const App: FC = () => {
               </ul>
             </nav>
             <Switch>
+              <Route path="/signup/:token" component={Signup} />
+              {!isAuth && <Route path="/login"><Login /></Route>}
               <PrivateRoute path="/" exact><Home /></PrivateRoute>
               <PrivateRoute path="/admin" restrictedAccess><Admin /></PrivateRoute>
               <PrivateRoute path="/users" restrictedAccess><Users /></PrivateRoute>
-              {!isAuth && <Route path="/login"><Login /></Route>}
-              <Route path="/signup/:token" component={Signup} />
               <Redirect to="/" />
             </Switch>
           </>

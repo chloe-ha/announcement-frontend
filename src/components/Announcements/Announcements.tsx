@@ -1,4 +1,5 @@
 import React, { FC, useReducer, useEffect } from 'react';
+import Box from '@mui/material/Box/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 
@@ -54,6 +55,19 @@ const Announcements: FC<AnnouncementsProps> = ({ view = 'classic' }) => {
                 </div>
               )
               : null}
+            {!data.length && (
+              <Box
+                className="signup-box"
+                sx={{
+                  width: 500,
+                  p: 4,
+                  m: '10px auto auto',
+                  textAlign: 'center',
+                }}
+              >
+                No announcements to show
+              </Box>
+            )}
             {data.map((d) => (
               <div key={d._id} className="announcement-item">
                 <h3>{d.title}</h3>

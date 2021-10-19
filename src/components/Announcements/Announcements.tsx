@@ -47,6 +47,13 @@ const Announcements: FC<AnnouncementsProps> = ({ view = 'classic' }) => {
         )
         : (
           <div className="announcement-list">
+            {view === 'admin'
+              ? (
+                <div className="create-action">
+                  <AnnouncementEdit action="create" refetch={fetchData} />
+                </div>
+              )
+              : null}
             {data.map((d) => (
               <div key={d._id} className="announcement-item">
                 <h3>{d.title}</h3>
@@ -61,13 +68,6 @@ const Announcements: FC<AnnouncementsProps> = ({ view = 'classic' }) => {
                   : null}
               </div>
             ))}
-            {view === 'admin'
-              ? (
-                <div className="create-action">
-                  <AnnouncementEdit action="create" refetch={fetchData} />
-                </div>
-              )
-              : null}
           </div>
         )}
     </div>
